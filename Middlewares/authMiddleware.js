@@ -15,6 +15,6 @@ module.exports = async (req, res, next) => {
       }
     });
   } catch (error) {
-    res.status(401).json({ message: 'Auth failed', success: false });
+    res.status(401).json({ message: 'Please Ensure You are logged In', success: false });
   }
 };
