@@ -23,6 +23,7 @@ router.post('/fetch-single-room-data', authMiddleware, userController.fetchSingl
 // ..................................................SEARCH_QUERY....................................
 
 router.post('/fetch-search-data', userController.fetchSearchData);
+router.get('/available-cities',userController.getAvailableCities)
 
 // .................................................BOOKING_RELATED.....................................
 

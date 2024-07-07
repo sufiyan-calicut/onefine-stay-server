@@ -108,7 +108,7 @@ module.exports = {
       if (otp === userOtp) {
         const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(password, salt);
-  
+
         const userData = {
           name,
           place,
@@ -116,14 +116,14 @@ module.exports = {
           phone,
           password: hashedPassword,
         };
-  
+
         const newUser = new User(userData);
         const userdb = await newUser.save();
-  
+
         const userdbId = userdb._id.toString();
         const wallet = new WalletDB({ userId: userdbId });
         await wallet.save();
-  
+
         console.log('User created successfully');
         res.status(200).json({ message: 'User created successfully', success: true });
       } else {
@@ -139,8 +139,6 @@ module.exports = {
 
   doLogin: async (req, res) => {
     try {
-
-
       const { email, password } = req.body;
       const userExist = await User.findOne({ $and: [{ email: email }, { userType: 'user' }] });
 
@@ -355,7 +353,7 @@ module.exports = {
   fetchSearchData: async (req, res) => {
     try {
       const skip = req.body.hotelData.length;
-      const location = req.body.location.trim();
+      const location = req.body.selectedLocation ? req.body.selectedLocation.trim() : req.body.location.trim();
       const userInput = {
         $or: [
           { hotelName: { $regex: new RegExp(location, 'i') } },
@@ -389,6 +387,20 @@ module.exports = {
         });
     } catch (error) {
       res.status(500).json({ message: 'something went wrong' });
+    }
+  },
+
+  //................................................AVAILABLE-CITIES..................................
+  getAvailableCities: async (req, res) => {
+    try {
+      const cities = await HotelDB.distinct('city');
+      if (cities) {
+        res.status(200).json(cities);
+      } else {
+        res.status(204).json({ message: 'sorry we are temporarily un-available' });
+      }
+    } catch (error) {
+      res.status(500).json({ message: `couldn't fetch available cities` });
     }
   },
 
